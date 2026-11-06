@@ -1,0 +1,46 @@
+[ansible@ansible-forge ~]$ ./install_signatures.sh
+== 1. backup to /opt/ansible/molecule/backups/signatures-2026-11-06-0959
+  backed up /opt/ansible/nucleus/playbooks/build_grafana_stack.yml
+  backed up /opt/ansible/nucleus/playbooks/play_build_grafana_stack.sh
+  backed up /opt/ansible/nucleus/playbooks/play_build_guac_release.sh
+  backed up /opt/ansible/nucleus/roles/configure_grafana_stack/tasks/nucleus-images.yml
+  backed up /opt/ansible/nucleus/roles/weekly_common/tasks/sign_weekly_images.yml
+  backed up /opt/ansible/nucleus/roles/build_guac_release/tasks/sign_hardened_images.yml
+  backed up /opt/ansible/nucleus/roles/build_guac_release/tasks/sign_base_image.yml
+  backed up /opt/ansible/nucleus/roles/build_guac_release/tasks/sign_functional_images.yml
+  backed up /opt/ansible/nucleus/roles/build_guac_release/tasks/clean_task.yml
+  backed up /opt/ansible/nucleus/roles/build_guac_release/tasks/scan_sast_dockerfiles.yml
+  backed up /opt/ansible/nucleus/roles/build_grafana_stack/tasks/sign_hardened_images.yml
+  backed up /opt/ansible/nucleus/roles/build_grafana_stack/tasks/sign_base_image.yml
+  backed up /opt/ansible/nucleus/roles/build_grafana_stack/tasks/sign_functional_images.yml
+  backed up /opt/ansible/nucleus/roles/build_grafana_stack/tasks/generate_metadata.yml
+  backed up /opt/ansible/nucleus/roles/build_grafana_stack/tasks/clean_task.yml
+  backed up /opt/ansible/nucleus/roles/build_grafana_stack/tasks/scan_sast_dockerfiles.yml
+  backed up /opt/ansible/nucleus/roles/configure_guacamole/tasks/nucleus-images.yml
+  backed up /opt/ansible/nucleus/roles/configure_guacamole/molecule/guac16/prepare.yml
+  backed up /opt/ansible/scripts/sync-base-image.sh
+== 2. install
+  installed 68 files
+== 3. move current quarter signatures into provenance/signatures
+  grafana (fy27q1): moved 24 file(s) to /opt/ansible/files/grafana/fy27q1/provenance/signatures
+  avocado (fy27q1): moved 24 file(s) to /opt/ansible/files/avocado/fy27q1/provenance/signatures
+== 4. guacamole service: no read-only root
+  removed read_only + tmpfs from the guacamole service
+== 5. ansible crontab: quarter check
+  now: 00 1 1 * * /opt/ansible/scripts/new-quarter.sh >> /opt/ansible/logs/check-new-quarter.log 2>&1
+
+done. Backups: /opt/ansible/molecule/backups/signatures-2026-11-06-0959
+
+
+[ansible@ansible-forge ~]$ ./guac_http_redirect.sh
+1. added the port 80 redirect block to /opt/ansible/files/avocado/fy27q1/nginx/conf.d/guacamole.conf (IPv4)
+2. compose template
+   /opt/ansible/files/avocado/docker-compose.yml.j2: nginx now publishes 80:80 and 443:443
+3. verify.yml: added the HTTP -> HTTPS redirect check
+4. weekly compose files in /opt/ansible/molecule/weekly/avocado/45/
+   /opt/ansible/molecule/weekly/avocado/45/docker-compose.yml: nginx now publishes 80:80 and 443:443
+   /opt/ansible/molecule/weekly/avocado/45/docker-compose.yml: guacamole read_only + tmpfs removed
+   /opt/ansible/molecule/weekly/avocado/45/docker-compose-ccop.yml: nginx now publishes 80:80 and 443:443
+
+Backups: /opt/ansible/molecule/backups/guac-http-2026-11-06-1000
+Takes effect on the next deployment. To see it now on the guac VM: run-guac16.sh deploy nucleus
