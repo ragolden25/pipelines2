@@ -2,3 +2,15 @@ To install on ansible-forge, as ansible:
 
 
 tar -xzf dashboard-failures.tar.gz -C / --no-same-owner --no-overwrite-dir -m
+
+
+Nothing else is needed on disk. Since the tarball paths start at /, extracting from /home/ansible wrote the two files straight into place. This should print 2:
+
+grep -c 'failure_info' /opt/ansible/nucleus/playbooks/play_weekly_molecule.sh; grep -c 'pipeline_quarterly_grafana.prom' /opt/ansible/nucleus/roles/build_grafana_stack/tasks/stack_finish.yml
+
+Then:
+
+Import the dashboard. In Grafana, go to Dashboards → New → Import and upload Nucleus_Pipelines_Status.json. When it says the dashboard already exists, choose Overwrite. The two new tables appear under the Molecule status boxes.
+Test today’s fixes on the guac VM. This checks the Tomcat read-only fix, the port 80 redirect and the new signatures path. It takes about 10 minutes:
+   /opt/ansible/molecule/run-guac16.sh deploy nucleus && /opt/ansible/molecule/run-guac16.sh verify nucleus
+Leave the full weekly runner until Thursday. It only tests images built in the last 24 hours, and this week’s were built yesterday at 08:00. Running it now would mark every image test “not tested”. That would at least show the new table working, but it wouldn’t test anything. Thursday’s 10:00 run will fill the table with real results.
