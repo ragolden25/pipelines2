@@ -1,0 +1,1 @@
+sed -i 's#docker exec guac-db pg_isready -U#docker exec guac-db pg_isready -h 127.0.0.1 -p 5432 -U#' /opt/ansible/nucleus/roles/configure_guacamole/tasks/db-import.yml && grep -n 'pg_isready' /opt/ansible/nucleus/roles/configure_guacamole/tasks/db-import.yml
