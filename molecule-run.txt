@@ -1,0 +1,15 @@
+That FAILED box has the same cause as the empty table. Both read the file the weekly runner writes, 
+and the last runner run was Thursday’s, when nucleus really failed. Your manual test proved the fix 
+but didn’t update that file, so the box still shows Thursday’s result.
+
+A full runner run today updates both, using the new age setting so it tests this week’s images:
+
+bash fix_dash_warn.sh && IMG_MAX_AGE_MIN=10080 /opt/ansible/nucleus/playbooks/play_weekly_molecule.sh
+
+What it runs: all six weekly tests, three for Grafana and three for Guacamole. Guacamole’s include redeploying the guac VM again, the same as your manual run. Expect about 30–40 minutes.
+Why it’s quiet: the runner writes everything to its log rather than the screen, so the prompt only comes back when it’s done. To watch it, run tail -f /opt/ansible/logs/weekly-molecule.log in another terminal.
+What changes when it finishes: the Guacamole nucleus box should turn green, and the new table should read “All weekly Molecule tests passed”, now accurately.
+
+fix_dash_warn.sh also makes both deployment roles search only signature folders that exist, so the “is not a directory” warning goes away. I tested that with a real Ansible find against folders with both layouts, only the new one, and neither. The combined tarball includes this fix too.
+
+From next Thursday on, the 10:00 run keeps the boxes and the table current without any manual step. The 24-hour default is unchanged.
