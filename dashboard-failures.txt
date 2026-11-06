@@ -1,0 +1,4 @@
+To install on ansible-forge, as ansible:
+
+
+tar -xzf dashboard-failures.tar.gz -C / --no-same-owner --no-overwrite-dir -m
